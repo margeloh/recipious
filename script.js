@@ -1,94 +1,116 @@
-//Initial References
-let result = document.getElementById("result");
-let searchBtn = document.getElementById("search-btn");
-let url = "https://api.spoonacular.com/recipes/complexSearch";
-let key = "af5f7845c84b4bab91d240a9186692b4";
+// configuration
+let url = 'https://api.spoonacular.com/recipes/complexSearch';
+let key = 'af5f7845c84b4bab91d240a9186692b4';
 
-searchBtn.addEventListener("click", () => {
+// implementation
+function buildReceipeElement(myMeal, resultEl)
+{
+	let recipeElement = document.createElement('div');
+	recipeElement.dataset.recipeId = myMeal.id;
+	recipeElement.classList.add('one-recipe');
+	recipeElement.classList.add('hidden');
+	console.info(myMeal);
+	
+	const mealSummary = myMeal.summary.replace(/(<([^>]+)>)/gi, '');
+	recipeElement.innerHTML = `
+		<h2>${myMeal.title}</h2>
+		<div class="recipe-image">
+			<img src=${myMeal.image}>
+		</div>
+		<h3>Ingredients</h3>
+		<div class="ingredients-block"></div>
+		<h3>Recipe Summary</h3>
+		<p class="details">
+			${mealSummary}
+		</p>
+		<h3>Instructions</h3>
+		<div class="instructions-block"></div>
+		
+		<!--div id="recipe">
+			<button id="hide-recipe">X</button>
+		</div>
+		<button id="show-recipe">View Recipe</button-->
+	`;
+
+	// create visual representation of ingredients
+	const ingredientsList = document.createElement("ul");
+	myMeal.extendedIngredients.forEach((i) => {
+		const measure = Math.round(i.measures.metric.amount) + ' ' + i.measures.metric.unitLong;
+		const child = document.createElement("li");
+		child.textContent = `${measure} ${i.originalName}`;
+		ingredientsList.appendChild(child);
+	});
+	recipeElement.querySelector(".ingredients-block").appendChild(ingredientsList);
+	
+	// create visual representation of step-by-step instructions
+	const instructionsList = document.createElement("ul");
+	let titleFound = false;
+	myMeal.analyzedInstructions.forEach((i) => {
+		const hasTitle = i.name.trim().length > 0;
+		if (hasTitle || titleFound) {
+			const stepSummary = document.createElement("li");
+			stepSummary.textContent = (hasTitle ? i.name : 'Then') + ':';
+			stepSummary.classList.add('step-summary');
+			instructionsList.appendChild(stepSummary);
+		}
+		if (hasTitle) {
+			titleFound = true;
+		}
+		i.steps.forEach((step) => {
+			const stepChild = document.createElement("li");
+			stepChild.textContent = step.step;
+			instructionsList.appendChild(stepChild);
+		});
+	});
+	recipeElement.querySelector('.instructions-block').appendChild(instructionsList);
+	
+	return recipeElement;
+}
+
+document.getElementById('search-form').addEventListener("submit", (evt) => {
+	evt.preventDefault();
+	const resultEl = document.getElementById('result');
 	let userInp = document.getElementById("user-inp").value;
 	if (userInp.length == 0) {
-		result.innerHTML = `<h3>Input Field Cannot Be Empty</h3>`;
+		result.innerHTML = '<h3 class="error">Input Field Cannot Be Empty</h3>';
 	} else {
-		fetch(url + '?apiKey=' + key + '&includeIngredients='+ encodeURIComponent(userInp) + '&instructionsRequired=true&fillIngredients=true&addRecipeInformation=true&sort=random')
+		fetch(url + '?apiKey=' + key + '&includeIngredients='+ encodeURIComponent(userInp) + '&instructionsRequired=true&fillIngredients=true&addRecipeInformation=true&sort=random&number=15')
 			.then((response) => response.json())
 			.then((data) => {
-				const myMeal = data.results[0];
-				console.log(myMeal);
-				/*
-				console.log(myMeal.strMealThumb);
-				console.log(myMeal.strMeal);
-				console.log(myMeal.strArea);
-				console.log(myMeal.strInstructions);
-				*/
-				
-				result.innerHTML = `
-					<h2>${myMeal.title}</h2>
-					<div class="recipe-image">
-						<img src=${myMeal.image}>
-					</div>
-					<h3>Recipe Summary</h3>
-					<p class="details">
-						${myMeal.summary}
-					</p>
-					<h3>Ingredients</h3>
-					<div id="ingredients-block"></div>
-					<h3>Instructions</h3>
-					<div id="instructions-block"></div>
+				resultEl.innerHTML = '<h2 class="search-results">Search Results:</h2><button class="back-button hidden">Back to Results</button><ul class="recipe-list"></ul>';
+				const recipeListTitle = resultEl.querySelector('h2');
+				const recipeListButton = resultEl.querySelector('button');
+				const recipeList = resultEl.querySelector('.recipe-list');
+				data.results.forEach((myMeal) => {
+					const timeEl = document.createElement('span');
+					const itemEl = document.createElement('li');
+					const recipeEl = buildReceipeElement(myMeal, resultEl);
+					itemEl.textContent = myMeal.title;
+					timeEl.textContent = new Date(1000 * myMeal.readyInMinutes * 60).toISOString().substr(11, 5);
+					timeEl.classList.add('time-info');
+					itemEl.appendChild(timeEl);
 					
-					<!--div id="recipe">
-						<button id="hide-recipe">X</button>
-					</div>
-					<button id="show-recipe">View Recipe</button-->
-				`;
-
-				// create visual representation of ingredients
-				const ingredientsList = document.createElement("ul");
-     			myMeal.extendedIngredients.forEach((i) => {
-					const measure = Math.round(i.measures.metric.amount) + ' ' + i.measures.metric.unitLong;
-					const child = document.createElement("li");
-					child.innerText = `${measure} ${i.originalName}`;
-					ingredientsList.appendChild(child);
-				});
-				document.getElementById("ingredients-block").appendChild(ingredientsList);
-				
-				// create visual representation of step-by-step instructions
-				const instructionsList = document.createElement("ul");
-				let titleFound = false;
-				myMeal.analyzedInstructions.forEach((i) => {
-					const hasTitle = i.name.trim().length > 0;
-					if (hasTitle || titleFound) {
-							console.log(i.name);
-						const stepSummary = document.createElement("li");
-						stepSummary.textContent = (hasTitle ? i.name : 'Then') + ':';
-						stepSummary.classList.add('step-summary');
-						instructionsList.appendChild(stepSummary);
-					}
-					if (hasTitle) {
-						titleFound = true;
-					}
-					i.steps.forEach((step) => {
-						const stepChild = document.createElement("li");
-						stepChild.textContent = step.step;
-						instructionsList.appendChild(stepChild);
+					recipeList.appendChild(itemEl);
+					resultEl.appendChild(recipeEl);
+					itemEl.addEventListener('click', () => {
+						recipeList.classList.add('hidden');
+						recipeListTitle.classList.add('hidden');
+						recipeListButton.classList.remove('hidden');
+						recipeEl.classList.remove('hidden');
 					});
 				});
-				document.getElementById("instructions-block").appendChild(instructionsList);
-			
-				const recipe = document.getElementById("recipe");
-				const hideRecipe = document.getElementById("hide-recipe");
-				const showRecipe = document.getElementById("show-recipe");
-
-    			/*hideRecipe.addEventListener("click", () => {
-					recipe.style.display = "none";
+				recipeListButton.addEventListener('click', () => {
+					recipeList.classList.remove('hidden');
+					recipeListTitle.classList.remove('hidden');
+     				recipeListButton.classList.add('hidden');
+	    			result.querySelectorAll('div.one-recipe').forEach((itemEl) => {
+						itemEl.classList.toggle('hidden', true);
+					});
 				});
-				showRecipe.addEventListener("click", () => {
-					recipe.style.display = "block";
-				});
-				*/
 			})
 			.catch((e) => {
-					console.log(e);
-				result.innerHTML = `<h3>Invalid Input</h3>`;
+			    console.error(e);
+				resultEl.innerHTML = '<h3 class="error">Invalid Input</h3>';
 			}
 		);
 	}
