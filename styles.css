@@ -1,6 +1,4 @@
 * {
-    padding: 0;
-    margin: 0;
     box-sizing: content-box;
     font-family: Arial, fantasy;
 }
@@ -9,16 +7,23 @@ body{
     background-color: #e8ebe4;
 }
 
+header {
+    background-color: #006e90;
+    padding: 20px;
+    color: white;
+  }
+
 .container {
     background-color: #b8bacf;
     font-size: small;
     padding: 3em 2.8em;
-	margin: 2em auto;
-    width: 90vw;
-    max-width: 50em;
+	margin-left: 5em;
+    width: 140vw;
+    max-width: 80em;
     position: relative;
     border-radius: 0.4em;
 }
+
 .search-container {
     width: 100%;
     display: grid;
@@ -47,7 +52,7 @@ button:hover { background-color: firebrick; }
 
 img {
     display: block;
-    width: 70%;
+    width: 50%;
 	border: 1px solid gray;
 	border-radius: 0.3em;
 }
@@ -66,7 +71,8 @@ p.details {
 h2 {
     font-size: 1.2em;
     font-weight: 600;
-	margin: 1em 0;
+	margin: 2em;
+    margin-left: 5em;
 }
 .recipe-list {
     font-size: 1em;

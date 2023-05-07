@@ -2,17 +2,23 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recipe App</title>
+    <title>RecipeAdvisor - Find recipes with ingredients you have</title>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+    <header>
+        <h1>RecipeAdvisor</h1>
+        <p>A web app that helps you find great recipes with ingredients you have in your fridge</p>
+    </header>
+        <h2>What should we use in our cooking today?</h2>
+        
 <div class="container">
 	<form id="search-form">
     <div class="search-container">
         <input
                 type="text"
-                placeholder="Type a list of components here separated by commas..."
+                placeholder="Enter ingridients separated by commas"
                 id="user-inp"
 				value=""
         />
@@ -21,6 +27,8 @@
 	</form>
     <div id="result"></div>
 </div>
+<footer>
+    <p>&copy; 2023 RecipeAdvisor. All rights reserved.</p>
 <!-- Script -->
 <script src="script.js"></script>
 </body>
