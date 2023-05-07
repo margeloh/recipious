@@ -78,35 +78,33 @@ document.getElementById('search-form').addEventListener("submit", (evt) => {
 			.then((response) => response.json())
 			.then((data) => {
 				resultEl.innerHTML = '<h2 class="search-results">Search Results:</h2><button class="back-button hidden">Back to Results</button><ul class="recipe-list"></ul>';
-				const recipeListTitle = resultEl.querySelector('h2');
-				const recipeListButton = resultEl.querySelector('button');
-				const recipeList = resultEl.querySelector('.recipe-list');
-				data.results.forEach((myMeal) => {
-					const timeEl = document.createElement('span');
-					const itemEl = document.createElement('li');
-					const recipeEl = buildReceipeElement(myMeal, resultEl);
-					itemEl.textContent = myMeal.title;
-					timeEl.textContent = new Date(1000 * myMeal.readyInMinutes * 60).toISOString().substr(11, 5);
-					timeEl.classList.add('time-info');
-					itemEl.appendChild(timeEl);
-					
-					recipeList.appendChild(itemEl);
-					resultEl.appendChild(recipeEl);
-					itemEl.addEventListener('click', () => {
-						recipeList.classList.add('hidden');
-						recipeListTitle.classList.add('hidden');
-						recipeListButton.classList.remove('hidden');
-						recipeEl.classList.remove('hidden');
-					});
-				});
-				recipeListButton.addEventListener('click', () => {
-					recipeList.classList.remove('hidden');
-					recipeListTitle.classList.remove('hidden');
-     				recipeListButton.classList.add('hidden');
-	    			result.querySelectorAll('div.one-recipe').forEach((itemEl) => {
-						itemEl.classList.toggle('hidden', true);
-					});
-				});
+const recipeListTitle = resultEl.querySelector('h2');
+const recipeListButton = resultEl.querySelector('button');
+const recipeList = resultEl.querySelector('.recipe-list');
+data.results.forEach((myMeal) => {
+  const timeEl = document.createElement('span');
+  const itemEl = document.createElement('li');
+  const recipeEl = buildReceipeElement(myMeal, resultEl);
+  itemEl.textContent = myMeal.title;
+  
+  // Add hourglass symbol
+  const hourglassSymbol = document.createElement('span');
+  hourglassSymbol.textContent = '\u231B'; // Unicode for hourglass symbol
+  timeEl.appendChild(hourglassSymbol);
+  
+  timeEl.textContent += ' ' + new Date(1000 * myMeal.readyInMinutes * 60).toISOString().substr(11, 5);
+  timeEl.classList.add('time-info');
+  itemEl.appendChild(timeEl);
+
+  recipeList.appendChild(itemEl);
+  resultEl.appendChild(recipeEl);
+  itemEl.addEventListener('click', () => {
+    recipeList.classList.add('hidden');
+    recipeListTitle.classList.add('hidden');
+    recipeListButton.classList.remove('hidden');
+    recipeEl.classList.remove('hidden');
+  });
+});
 			})
 			.catch((e) => {
 			    console.error(e);
