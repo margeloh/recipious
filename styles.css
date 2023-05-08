@@ -9,9 +9,23 @@ body{
 
 header {
     background-color: #006e90;
+    background-image: url(4.png) ;
     padding: 20px;
-    color: white;
+    font-weight: 800;
   }
+
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 50px;
+  }
+
+.intro {
+    background-color: whitesmoke;
+    opacity: 0.8;
+    font-weight: 300;
+    padding: 10px;
+    margin: 0;
+}
 
 .container {
     background-color: #b8bacf;
@@ -70,7 +84,7 @@ p.details {
 }
 h2 {
     font-size: 1.2em;
-    font-weight: 600;
+    font-weight: 500;
 	margin: 2em;
     margin-left: 5em;
 }
