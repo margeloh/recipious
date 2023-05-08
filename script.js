@@ -77,7 +77,7 @@ document.getElementById('search-form').addEventListener("submit", (evt) => {
 		fetch(url + '?apiKey=' + key + '&includeIngredients='+ encodeURIComponent(userInp) + '&instructionsRequired=true&fillIngredients=true&addRecipeInformation=true&sort=random&number=15')
 			.then((response) => response.json())
 			.then((data) => {
-				resultEl.innerHTML = '<h2 class="search-results">Search Results:</h2><button class="back-button hidden">Back to Results</button><ul class="recipe-list"></ul>';
+				resultEl.innerHTML = '<h2 class="search-results"></h2><button class="back-button hidden">Back to Results</button><ul class="recipe-list"></ul>';
 const recipeListTitle = resultEl.querySelector('h2');
 const recipeListButton = resultEl.querySelector('button');
 const recipeList = resultEl.querySelector('.recipe-list');
@@ -107,6 +107,8 @@ sortedResults.forEach((myMeal) => {
     recipeEl.classList.remove('hidden');
   });
 });
+
+recipeListTitle.textContent = `Found ${sortedResults.length} recipes`;
 			})
 			.catch((e) => {
 			    console.error(e);
