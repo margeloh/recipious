@@ -81,7 +81,9 @@ document.getElementById('search-form').addEventListener("submit", (evt) => {
 const recipeListTitle = resultEl.querySelector('h2');
 const recipeListButton = resultEl.querySelector('button');
 const recipeList = resultEl.querySelector('.recipe-list');
-data.results.forEach((myMeal) => {
+const sortedResults = data.results.sort((a, b) => a.readyInMinutes - b.readyInMinutes);
+
+sortedResults.forEach((myMeal) => {
   const timeEl = document.createElement('span');
   const itemEl = document.createElement('li');
   const recipeEl = buildReceipeElement(myMeal, resultEl);
